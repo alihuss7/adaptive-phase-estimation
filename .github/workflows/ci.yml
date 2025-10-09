@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run tests
+        run: |
+          pytest test_adaptive_phase_estimation.py -v --cov=adaptive_phase_estimation --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install black pylint
+
+      - name: Check formatting with Black
+        run: |
+          black --check adaptive_phase_estimation.py test_adaptive_phase_estimation.py
+
+      - name: Lint with Pylint
+        run: |
+          pylint adaptive_phase_estimation.py --disable=C0103,R0913,R0914,R0915
+        continue-on-error: true
+
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run minimal benchmark
+        run: |
+          python adaptive_phase_estimation.py \
+            --angle 0.5 \
+            --bits 3 \
+            --shots 512 \
+            --replicates 2 \
+            --p1 0.0 0.001 \
+            --seed 42 \
+            --csv test_results.csv \
+            --json test_results.json \
+            --fig test_results.png \
+            --quiet
+
+      - name: Check outputs exist
+        run: |
+          test -f test_results.csv
+          test -f test_results.json
+          test -f test_results.png
+          echo "✅ All output files generated successfully"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: |
+            test_results.csv
+            test_results.json
+            test_results.png
