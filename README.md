@@ -101,7 +101,7 @@ Dynamic: single ancilla measured each iteration → conditional phase correction
 | `ipea_benchmark_results.json` | Full config + run records                         |
 | `ipea_benchmark_results.png`  | Error vs shots / noise plots                      |
 
-## 📓 Notebook
+## Notebook
 
 Open `example_usage.ipynb` for a curated walkthrough covering:
 
@@ -110,7 +110,7 @@ Open `example_usage.ipynb` for a curated walkthrough covering:
 - Inspecting measurement histograms and convergence diagnostics
 - Reproducing benchmark presets with seeded randomness
 
-## ✅ Testing
+## Testing
 
 Run the test suite:
 
