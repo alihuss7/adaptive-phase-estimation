@@ -147,30 +147,12 @@ Need finer-grained checks? Useful variants include:
 
 Pinned versions in `requirements.txt` (Qiskit 2.x, Aer, NumPy, Matplotlib, Pandas). Optional: `qiskit-ibm-runtime` for hardware.
 
-## Contributing
-
-PRs welcome: fork → branch → commit → PR. Please keep additions minimal & tested.
-
 ## License
 
 MIT (see `LICENSE`).
-
-## Citation (Template)
-
-```bibtex
-@software{adaptive_phase_estimation,
-  title={Adaptive Phase Estimation with Dynamic Circuits},
-  year={2024},
-  url={https://github.com/yourusername/adaptive-phase-estimation}
-}
-```
 
 ## References
 
 1. A. Kitaev, Quantum measurements and the Abelian Stabilizer Problem (1995).
 2. IBM Quantum Docs – Dynamic Circuits.
 3. Qiskit Textbook – Phase Estimation.
-
----
-
-Star the repo if this helps your research.
